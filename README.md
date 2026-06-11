@@ -2,6 +2,8 @@
 
 跨 Session 对话历史自动共享方案。
 
+[![ClawHub](https://img.shields.io/badge/ClawHub-session--history--share-blue)](https://clawhub.com/session-history-share)
+
 ## 功能说明
 
 ### v1.0 - 轻量注入 ✅ 已实现
