@@ -2,7 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const HISTORY_DIR = path.join(process.env.HOME, '.openclaw', 'workspace', '.session_history');
-const cache = new Map();
+const CACHE_TTL_MS = 10 * 60 * 1000; // 10 分钟缓存过期
+const cache = new Map(); // Map<sessionKey, { content, timestamp }>
 
 // 输出到 openclaw 日志（通过 `openclaw logs` 查看）
 function log(msg) {
@@ -14,8 +15,11 @@ function sessionKeyToDir(sessionKey) {
 }
 
 function getLatestArchive(sessionKey) {
-  // 同 session 内直接返回缓存
-  if (cache.has(sessionKey)) return cache.get(sessionKey);
+  // 检查缓存是否过期
+  const cached = cache.get(sessionKey);
+  if (cached && Date.now() - cached.timestamp < CACHE_TTL_MS) {
+    return cached.content;
+  }
 
   try {
     const dirName = sessionKeyToDir(sessionKey);
@@ -34,8 +38,8 @@ function getLatestArchive(sessionKey) {
 
     if (!content || content.trim().length === 0) return null;
 
-    // 缓存结果
-    cache.set(sessionKey, content);
+    // 更新缓存（带时间戳）
+    cache.set(sessionKey, { content, timestamp: Date.now() });
     return content;
   } catch (err) {
     // 只在出错时记录日志
@@ -52,7 +56,7 @@ export default async function handler(event) {
 
   if (!sessionKey || !Array.isArray(bootstrapFiles)) return;
 
-  const archive = getLatestArchive(sessionKey);
+  const archive = getLatestArchive(sessionKey); 
   if (!archive) return;
 
   log(`Injecting history for sessionKey=${sessionKey}`);
