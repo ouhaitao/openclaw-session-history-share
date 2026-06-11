@@ -1,6 +1,8 @@
 # OpenClaw Session History Share
 
-跨 Session 对话历史自动共享方案。
+openclaw以sessionKey为隔离级别的跨session共享对话历史。全部基于openclaw内部机制实现。
+
+会话历史使用轻量注入+历史召回的二级缓存架构。
 
 [![ClawHub](https://img.shields.io/badge/ClawHub-session--history--share-blue)](https://clawhub.com/session-history-share)
 
@@ -43,7 +45,7 @@
 | v1.1 | **会话召回** - 向量检索 + 智能召回 | 🔄 计划中 |
 | v2.0 | **上下文引擎** - 完整 Context Engine 支持 | 📋 规划中 |
 
-### v1.1 - 会话召回（计划中）
+### v1.1 - 历史召回（计划中）
 
 基于向量检索的智能历史召回：
 
